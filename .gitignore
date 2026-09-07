@@ -1,0 +1,20 @@
+# Java 编译产物
+*.class
+target/
+
+# Python 缓存和虚拟环境
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE 配置
+.idea/
+.vscode/
+
+# 密钥、日志和本地数据库
+.env
+*.log
+*.db
+*.sqlite
+*.sqlite3
