@@ -1,9 +1,11 @@
 package com.example.notes_api;
 
+import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class NoteController {
@@ -21,6 +23,11 @@ public class NoteController {
         }
         Map<String,Object> data = noteService.getNote();
         return data;
+    }
+
+    @GetMapping("/api/notes")
+    public List<Map<String,Object>> getNotes(@RequestParam("ownerId") long ownerId,@RequestParam("page") int page){
+        return noteService.getNotes(ownerId, page);
     }
 
 }
