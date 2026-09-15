@@ -5,25 +5,25 @@ import java.util.Map;
 
 public class A01Review {
     public static void main(String[] args) {
-        String s = "";
-        String t = "";
+        String s = "aab";
+        String t = "aba";
+        Map<Character,Integer> note = new HashMap<>();
         if (s.length() != t.length()) {
             System.out.println(false);
-            return;
+            return ;
         }
-        Map<Character,Integer> counts = new HashMap<>();
-        for(char ex:s.toCharArray()){
-            int num = 0;
-            num = counts.getOrDefault(ex, 0);
-            counts.put(ex, num+1);
+        for(char ch : s.toCharArray()){
+            int sum = 0;
+            sum = note.getOrDefault(ch, 0);
+            note.put(ch, sum+1);
         }
-        for(char ex:t.toCharArray()){
-            int num = counts.getOrDefault(ex, 0);
+        for(char ch : t.toCharArray()){
+            int num = note.getOrDefault(ch, 0);
             if (num == 0) {
                 System.out.println(false);
                 return;
             }
-            counts.put(ex, num-1);
+            note.put(ch, num-1);
         }
         System.out.println(true);
     }
