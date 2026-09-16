@@ -6,12 +6,12 @@ def clean_text(text: str) -> str:
     result=result.replace("\r","\n")
     result=result.strip("\n")
     return result
+if __name__ == "__main__":
+    sample = "\r\nVPN 使用说明\r\n    print('连接成功')\r\n\r\n"
+    print(repr(clean_text(sample)))
+    print("空串：", repr(clean_text("")))
+    print("只有换行：", repr(clean_text("\r\n\r\n")))
 
-sample = "\r\nVPN 使用说明\r\n    print('连接成功')\r\n\r\n"
-print(repr(clean_text(sample)))
-print("空串：", repr(clean_text("")))
-print("只有换行：", repr(clean_text("\r\n\r\n")))
-
-once = clean_text(sample)
-twice = clean_text(once)
-print("两次结果相同：", once == twice)
+    once = clean_text(sample)
+    twice = clean_text(once)
+    print("两次结果相同：", once == twice)

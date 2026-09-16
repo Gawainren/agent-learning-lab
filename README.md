@@ -114,6 +114,25 @@ SQLTools和命令行连接混用曾造成未结束事务及锁等待超时，定
 
 本轮算法提交待本人提交推送，Day014已有提交469754b不代表这些新改动已上传。线上打卡未同步。
 
+## Day015 模块入口与环境配置（2026-09-16）
+
+最小工程成果提示后通过，核心代码本人编写。day005/clean_text.py的示例放在__main__判断内，助手实际验收直接运行四行输出、仅导入无输出，均退出0；保留缩进、空串、只有换行与重复清洗结果一致。
+
+day015/config.py读取APP_NAME；缺少变量时抛出明确ValueError，正常路径打印服务名。以下从仓库根目录在PowerShell逐条运行，最后一条预期失败：
+
+```powershell
+python -X utf8 -B day005/clean_text.py
+python -B -c "import sys; sys.path.insert(0, 'day005'); from clean_text import clean_text"
+$env:APP_NAME = 'notes-cleaner'
+python -X utf8 -B day015/config.py
+Remove-Item Env:APP_NAME -ErrorAction SilentlyContinue
+python -X utf8 -B day015/config.py
+```
+
+助手实际在各脚本目录运行：配置存在时输出'notes-cleaner'、退出0；缺少时报告“ValueError: 缺少必要环境变量 APP_NAME”、退出1且不打印None。config.py是检查脚本，导入也会执行检查和打印；可安静导入的是clean_text模块。示例无真实密钥，空字符串配置未校验。
+
+本轮只完成Day015，未启动FastAPI或进行打包、完整测试。实际用时未记录。今天无算法安排，A01整体提示后通过、独立掌握待09-19复查；09-17短查模块入口与缺配置控制流。Git待本人提交推送，线上打卡未同步。
+
 ## 提交规则
 
 只提交源码、测试和必要文档，不提交 `.class`、密钥、虚拟环境、本地数据库和依赖目录。
