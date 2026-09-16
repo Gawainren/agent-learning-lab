@@ -136,3 +136,27 @@ python -X utf8 -B day015/config.py
 ## 提交规则
 
 只提交源码、测试和必要文档，不提交 `.class`、密钥、虚拟环境、本地数据库和依赖目录。
+
+## Day016 FastAPI清洗接口（2026-09-16）
+
+最小成果提示后通过，核心代码本人编写。请求模型CleanRequest包含必填字符串text，响应模型CleanResponse包含cleaned_text；POST /clean复用day005.clean_text，统一换行并去掉两端换行。空字符串允许，返回空字符串；未实现摘要或AI调用。
+
+从E:\Agent\练习启动（当前已验证环境：Python3.13、FastAPI0.136.3、Pydantic2.13.4、Uvicorn0.49.0）：
+
+```powershell
+python -m uvicorn day016.main:app --host 127.0.0.1 --port 18093
+```
+
+访问http://127.0.0.1:18093/docs，展开POST /clean，通过Try it out发送请求。
+
+| 请求体 | 本人提供的HTTP证据 |
+| --- | --- |
+| {"text":"\r\nVPN guide\r\n"} | 200，{"cleaned_text":"VPN guide"} |
+| {"text":123} | 422，string_type，错误定位body.text |
+| {"text":""} | 200，{"cleaned_text":""} |
+
+助手读取源码；启动日志及HTTP输出由本人提供，助手未独立重跑。未执行打包或完整测试，缺字段、纯空白、超长及额外字段未做HTTP验收。服务停止状态未确认。
+
+最初混淆普通类型提示与运行时校验、类与函数、赋值与调用、响应字段构造；经提示修正，讲解后正确复述函数传参及返回值。09-17与Day015合并短查一到两项，不记跨天独立掌握。
+
+本人确认今天Day015和Day016合计60分钟，只计一次、分项未拆分，更新上方历史未记录状态；后续Git用时未确认。今天无算法，A01保持整体提示后通过、独立掌握待09-19复查。Day016 Git待本人提交推送，线上打卡未同步。

@@ -11,7 +11,6 @@ if __name__ == "__main__":
     print(repr(clean_text(sample)))
     print("空串：", repr(clean_text("")))
     print("只有换行：", repr(clean_text("\r\n\r\n")))
-
     once = clean_text(sample)
     twice = clean_text(once)
     print("两次结果相同：", once == twice)
