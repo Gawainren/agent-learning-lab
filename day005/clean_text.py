@@ -14,3 +14,4 @@ if __name__ == "__main__":
     once = clean_text(sample)
     twice = clean_text(once)
     print("两次结果相同：", once == twice)
+    print(clean_text(123))
