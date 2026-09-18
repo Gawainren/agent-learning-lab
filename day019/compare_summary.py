@@ -1,10 +1,14 @@
 # 导入 os，再用 from openai import OpenAI 导入客户端。
 import os
+import json
+from pathlib import Path
 from openai import OpenAI
 from pydantic import BaseModel
 
-# 用 os.getenv("DEEPSEEK_API_KEY") 读取环境变量，保存到 api_key。
-api_key = os.getenv("DEEPSEEK_API_KEY")
+# 环境变量优先；未设置时读取练习目录的本地配置，与启动目录无关。
+config_path = Path(__file__).resolve().parents[1] / "local-settings.json"
+local_config = json.loads(config_path.read_text(encoding="utf-8-sig")) if config_path.exists() else {}
+api_key = os.getenv("DEEPSEEK_API_KEY") or local_config.get("DEEPSEEK_API_KEY")
 
 # 如果密钥缺失或为空，抛出 ValueError("缺少 DEEPSEEK_API_KEY")。
 if not api_key:

@@ -46,18 +46,21 @@
 
 ## 运行当前笔记接口
 
-需要 Java 17、Maven 和可连接的 MySQL，库名为 `agent_learning`，表和样本见 `day011/notes.sql`。从仓库根目录打开 PowerShell，设置当前终端环境并启动（用户名按本机实际配置填写，密码交互输入）：
+需要 Java 17、Maven 和可连接的 MySQL，库名为 `agent_learning`，表和样本见 `day011/notes.sql`。
+
+2026-09-18 起，数据库配置可保存在 `day008/notes-api/notes-api/local.properties`，只需填写一次 `DB_USERNAME` 和 `DB_PASSWORD`。若文件不存在，从同目录 `local.properties.example` 复制。值不加引号，密码中的一个反斜杠写成两个反斜杠。该文件已被 Git 忽略，放在资源目录之外，不随 JAR 打包。
+
+从仓库根目录打开 PowerShell，准备 Java/Maven 后切换到包含 pom.xml 和 local.properties 的目录启动：
 
 ```powershell
 . .\day001\准备终端.ps1
-$env:DB_URL = 'jdbc:mysql://localhost:3306/agent_learning'
-$env:DB_USERNAME = Read-Host 'MySQL 用户名'
-$dbSecret = Read-Host 'MySQL 密码' -AsSecureString
-$env:DB_PASSWORD = [System.Net.NetworkCredential]::new('', $dbSecret).Password
-Remove-Variable dbSecret
 cd day008/notes-api/notes-api
 mvn spring-boot:run '-Dspring-boot.run.arguments=--server.port=18092'
 ```
+
+Spring Boot 使用 `spring.config.import=optional:file:./local.properties` 加载本地文件；路径相对于启动目录。环境变量仍可覆盖文件值；若当前终端有旧值，可新开终端按上面步骤启动。配置规则参考 [Spring Boot 官方文档](https://docs.spring.io/spring-boot/reference/features/external-config.html)。
+
+Python 的 Day015、Day017、Day019 使用练习根目录的 `local-settings.json`（模板为 `local-settings.example.json`）。在双引号内填写 `DEEPSEEK_API_KEY`，`APP_NAME` 默认 `notes-ai`；JSON 不支持注释。文件路径根据脚本位置定位，从不同目录运行也能读取。环境变量优先，本地文件作为默认值；两份含凭据的本地配置都不要提交，只提交不含凭据的模板。新增读取逻辑只使用 Python 标准库。Day015 的缺配置实验需同时移除环境变量和本地对应配置项。
 
 保持服务运行，在另一个终端执行：
 
@@ -172,13 +175,13 @@ python -m uvicorn day016.main:app --host 127.0.0.1 --port 18093
 
 核心代码本人编写，整体提示后通过。day017/summary.py读取DEEPSEEK_API_KEY，用DeepSeek的deepseek-flash非思考模式请求JSON摘要，max_tokens=300；SummaryResult要求summary为字符串、keywords为字符串列表，通过model_validate_json校验后才打印成功。
 
-在已设置DEEPSEEK_API_KEY的PowerShell终端，从仓库根目录执行：
+配置好本地local-settings.json或DEEPSEEK_API_KEY环境变量后，从仓库根目录执行：
 
 ```powershell
 python day017/summary.py
 ```
 
-需要openai和pydantic；本人反馈openai SDK版本2.43.0。密钥只设在环境变量，不写入源码。每次执行会发起真实付费请求。
+需要openai和pydantic；本人反馈openai SDK版本2.43.0。密钥可来自环境变量或被Git忽略的local-settings.json，不写入源码。每次执行会发起真实付费请求。
 
 本人提供真实输出：摘要包含连接前检查网络、输入账号验证、失败后检查账号并联系IT，关键词为VPN、网络、账号、验证、IT支持；输出“校验通过”。失败验收临时关闭网络请求，用固定JSON字符串仅提供summary，得到keywords Field required的ValidationError，成功打印未执行。此失败样本是本地替身，不是真实模型坏响应。之后本人恢复真实请求，助手读回核对，未重复付费运行。
 
@@ -193,3 +196,20 @@ python day017/summary.py
 本人提供的行为证据：sleep(3)且timeout=1时输出“等待超时，本次没有拿到摘要。”；改为sleep(0.2)后输出“摘要完成”。此前未捕获异常的堆栈含sleep处CancelledError和最终TimeoutError，展示本地等待取消。助手读回源码，未独立重跑、精确计时或执行完整测试。本次没有调用真实模型，不能证明远端模型停止；未验证阻塞或抑制取消的情况，不承诺严格一秒退出。
 
 print/return、await和try范围经提示修正，09-18复查；本人已整理旧延迟注释，助手读回确认，核心逻辑未变。今日减量、无算法，A01待09-19复查。实际用时未记录，Git待本人提交推送，线上未同步。
+
+
+## Day020 认证与资源归属（2026-09-18）
+
+本节为当前接口行为；上方Day008至Day014的免认证、固定笔记描述为历史验收记录。核心Java代码本人编写，最小成果提示后通过。工程仍在day008/notes-api/notes-api。
+
+首次运行在local.properties填写DB_USERNAME、DB_PASSWORD、app.auth.user-a-password、app.auth.user-b-password（可参考同目录example），用户名A为10、B为20。测试用户内存注册，密码经BCrypt编码；数据归属由Principal中的已认证用户名确定。当地配置文件不提交；原有本地文件需要补齐新增的两个密码项。Python本地配置读取变更详见前文，未重新进行模型实测。
+
+从含pom.xml的目录执行mvn spring-boot:run '-Dspring-boot.run.arguments=--server.port=18092'。普通curl请求用--user "10"或"20"并交互输入对应测试密码；GET /api/notes?page=1只查询本人列表，GET /api/notes/1按id与归属联合查询。未认证GET返回401；无权访问或不存在的单条返回404。
+
+PUT /api/notes/1/title接收JSON的title字段，忽略客户端ownerId。成功204，更新0行404；空白标题或非法编号有400校验，后者尚未HTTP验收。保留CSRF防护：先用对应用户GET /api/csrf，通过curl --cookie-jar保存Cookie并保留返回的token/headerName，PUT携带同一用户凭据、--cookie和对应token请求头。A/B必须分别保存Cookie和token；临时文件置于系统TEMP，不提交。
+
+本人提供实际结果：无凭据401；A列表1/3和单条1返回200；B伪造列表ownerId=10时只返回本人笔记2；B读取/api/notes/1及追加ownerId=10均404。A携带CSRF把标题改为Day020-A-verified，204后GET确认；B携带自己的有效CSRF，在URL和JSON同时伪造ownerId=10尝试写B-should-not-write，404后A读回仍为Day020-A-verified。最后A恢复VPN排障，204后读回id1、owner_id10、title为VPN排障、content为检查网络。
+
+助手核对源码，HTTP和启动证据来自本人；此前5个及6个源文件重新编译成功，后续一次compile为Nothing to compile。完整打包和完整测试未执行；缺/过期CSRF、会话失效及错误密码未验收。Basic凭据与CSRF token用途不同；会话失效需重新获取token，不能把它当作撤销Basic密码。
+
+实际用时未记录，与当天Day019共享预算。09-19复查身份到SQL条件链路及void/SET与WHERE卡点；算法今日无安排，A01仍待09-19复查。Git待本人提交推送，线上学习打卡未同步；本次不启动Day021。

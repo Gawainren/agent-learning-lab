@@ -1,0 +1,7 @@
+# Copy to local.properties in this directory. Do not add quotes around values.
+# Escape a literal backslash as \\ in .properties values.
+DB_URL=jdbc:mysql://localhost:3306/agent_learning
+DB_USERNAME=
+DB_PASSWORD=
+app.auth.user-a-password=
+app.auth.user-b-password=

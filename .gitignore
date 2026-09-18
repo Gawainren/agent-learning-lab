@@ -14,6 +14,8 @@ venv/
 
 # 密钥、日志和本地数据库
 .env
+local.properties
+local-settings.json
 *.log
 *.db
 *.sqlite
