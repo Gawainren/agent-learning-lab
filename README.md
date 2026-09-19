@@ -213,3 +213,15 @@ PUT /api/notes/1/title接收JSON的title字段，忽略客户端ownerId。成功
 助手核对源码，HTTP和启动证据来自本人；此前5个及6个源文件重新编译成功，后续一次compile为Nothing to compile。完整打包和完整测试未执行；缺/过期CSRF、会话失效及错误密码未验收。Basic凭据与CSRF token用途不同；会话失效需重新获取token，不能把它当作撤销Basic密码。
 
 实际用时未记录，与当天Day019共享预算。09-19复查身份到SQL条件链路及void/SET与WHERE卡点；算法今日无安排，A01仍待09-19复查。Git待本人提交推送，线上学习打卡未同步；本次不启动Day021。
+
+
+## 2026-09-19 状态更新：A01结束，补充力扣证据
+
+本人明确确认A01已经结束、对应力扣题均已通过；本次截图显示242、LCR 032、383、387、389五题绿色通过标记。按最新反馈将A01记为已完成（力扣通过有截图证据），不再将09-15复杂度待查作为继续学习的阻塞条件。09-15提示后通过的历史保留；本次未读取力扣提交源码，也未重新验收独立复杂度表达。力扣实际提交日期、用时未提供，不推定为09-19新完成的算法窗口。下一题入口A02；今日是否已另做25–30分钟算法尚未确认。线上学习打卡未同步，本次记录未提交或推送。
+
+
+## Day021：Java/Python本地字段契约核对（09-19至09-20凌晨）
+
+提示后通过。Python运行 `python -X utf8 -B day021/contract_check.py`；Java在 `day008/notes-api/notes-api` 运行 `.\mvnw.cmd compile exec:java "-Dexec.mainClass=com.example.notes_api.SummaryContractCheck"`。正常样本两端均输出摘要和关键词列表；把summary值改为数组，Python在字段校验报string_type，Java在readValue报MismatchedInputException并定位summary。JSON片段曾报json_invalid，区别于字段类型错误。输出由本人提供，源码本人编写，助手读回；两端现已恢复正常样本。未验证HTTP联调、真实模型、打包或完整测试。Java声明不代表与Pydantic所有必填规则等价。
+
+实际跨午夜仍属周六学习场次，用时未记录、预算不重置；周日复盘留待起床后。A02本场四组功能验收通过，提示后完成，复杂度按本人要求暂缓，下一算法窗口09-21；更新前文尚未确认状态。本次Git待本人提交推送，线上未同步；A01目录迁移及A02源码留待单独处理。
