@@ -20,3 +20,6 @@ local-settings.json
 *.db
 *.sqlite
 *.sqlite3
+
+# 根目录临时练习文件
+/test.java
